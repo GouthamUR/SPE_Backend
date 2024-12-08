@@ -3,7 +3,8 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY backend/target/backend-app.jar backend-app.jar
+# Update to match the actual JAR file name
+COPY target/fullstackbackend-0.0.1-SNAPSHOT.jar backend-app.jar
 
 EXPOSE 8081
 
