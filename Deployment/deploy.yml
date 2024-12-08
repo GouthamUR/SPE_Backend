@@ -1,0 +1,32 @@
+- name: Deploy Full Stack Application
+  hosts: localhost
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Pull Docker Image for Backend
+      docker_image:
+        name: gouthamur1/backend:latest
+        source: pull
+
+    - name: Stop existing Backend container
+      shell: docker stop backend || true
+
+    - name: Remove existing Backend container
+      shell: docker rm backend || true
+
+    - name: Run Backend container
+      shell: docker run -d --name backend -p 8081:8081 gouthamur1/backend:latest
+
+    - name: Pull Docker Image for Frontend
+      docker_image:
+        name: gouthamur1/frontend:latest
+        source: pull
+
+    - name: Stop existing Frontend container
+      shell: docker stop frontend || true
+
+    - name: Remove existing Frontend container
+      shell: docker rm frontend || true
+
+    - name: Run Frontend container
+      shell: docker run -d --name frontend -p 3000:3000 gouthamur1/frontend:latest
