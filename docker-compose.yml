@@ -23,7 +23,7 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/my_database
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/fullstack
       - SPRING_DATASOURCE_USERNAME=CEO
       - SPRING_DATASOURCE_PASSWORD=CEO_Str0ng@2024!
     networks:
