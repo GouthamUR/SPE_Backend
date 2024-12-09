@@ -21,7 +21,7 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - mysql-db
+      - mysql
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/fullstack
       - SPRING_DATASOURCE_USERNAME=CEO
