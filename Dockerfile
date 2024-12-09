@@ -1,6 +1,6 @@
 FROM openjdk:17-jdk-slim
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Update to match the actual JAR file name
 COPY target/fullstackbackend-0.0.1-SNAPSHOT.jar backend-app.jar
