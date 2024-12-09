@@ -1,10 +1,5 @@
-FROM openjdk:17-jdk-slim
-
-WORKDIR /usr/src/app
-
-# Update to match the actual JAR file name
-COPY target/fullstackbackend-0.0.1-SNAPSHOT.jar backend-app.jar
-
+FROM maven:3.9.4-eclipse-temurin-17
+WORKDIR /app
+COPY . .
 EXPOSE 8081
-
-CMD ["java", "-jar", "backend-app.jar", "--server.port=8081"]
+ENTRYPOINT ["mvn", "spring-boot:run"]
