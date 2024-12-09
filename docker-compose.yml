@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:8081
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/my_database
+      - SPRING_DATASOURCE_USERNAME=CEO
+      - SPRING_DATASOURCE_PASSWORD=CEO_Str0ng@2024!
+    networks:
+      - app-network
+
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Tom&Jerry@1
+      MYSQL_DATABASE: fullstack
+      MYSQL_USER: CEO
+      MYSQL_PASSWORD: CEO_Str0ng@2024!
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
