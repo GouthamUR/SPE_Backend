@@ -3,7 +3,7 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./frontend
+      context: /home/nimishgsk/Prog/SPE/Frontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
@@ -16,7 +16,7 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: /home/nimishgsk/Prog/SPE/Backend
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
