@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  database:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: your_database
+      MYSQL_USER: your_user
+      MYSQL_PASSWORD: your_password
+    ports:
+      - "3306:3306"  # Exposes MySQL on localhost:3306
+    volumes:
+      - db_data:/var/lib/mysql  # Persist data even if the container stops
+
+  backend:
+    image: gouthamur1/backend:latest
+    container_name: backend-container
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/your_database
+      SPRING_DATASOURCE_USERNAME: CEO
+      SPRING_DATASOURCE_PASSWORD: CEO_Str0ng@2024!
+
+  frontend:
+    image: gouthamur1/frontend:latest
+    container_name: frontend-container
+    restart: always
+    ports:
+      - "3000:3000"
+
+volumes:
+  db_data:  # A named volume for database persistence
