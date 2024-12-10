@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: /home/gouthamur/IdeaProjects/FS/src/main/java/org/example/fullstack-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: /home/gouthamur/IdeaProjects/SPE_Backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_new:3306/fullstack
+      SPRING_DATASOURCE_USERNAME: CEO
+      SPRING_DATASOURCE_PASSWORD: CEO_Str0ng@2024!
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_new
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: fullstack
+      MYSQL_USER: CEO
+      MYSQL_PASSWORD: CEO_Str0ng@2024!
+    networks:
+      - app-network
+
+networks:
+  app-network:
