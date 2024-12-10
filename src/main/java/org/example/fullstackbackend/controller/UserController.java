@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+//@CrossOrigin("http://frontend:3000")
 //@CrossOrigin("http://localhost:3000")
 @CrossOrigin("http://192.168.49.2:30007")
 public class UserController {
