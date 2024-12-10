@@ -1,5 +1,6 @@
-FROM maven:3.9.4-eclipse-temurin-17
+# Backend Dockerfile
+FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY . .
+COPY target/fullstackbackend-0.0.1-SNAPSHOT.jar backend-app.jar
 EXPOSE 8081
-ENTRYPOINT ["mvn", "spring-boot:run"]
+CMD ["java", "-jar", "backend-app.jar", "--server.port=8081"]
