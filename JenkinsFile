@@ -1,0 +1,129 @@
+pipeline {
+    environment {
+        DOCKERHUB_CRED = credentials("fd1308e0-c8f7-44ae-be5f-05e2dd5238a2")
+    }
+    agent any
+    stages {
+
+        stage('Stage 1: Git Clone Backend') {
+            steps {
+                git branch: 'master',
+                    url: 'https://github.com/GouthamUR/SPE_Backend.git'
+            }
+        }
+
+        stage('Stage 2: Git Clone Frontend') {
+            steps {
+                dir('frontend') {
+                    git branch: 'master',
+                        url: 'https://github.com/GouthamUR/SPE_Frontend.git'
+                }
+            }
+        }
+
+        stage('Stage 3: Maven Build Backend') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Stage 4: Build Docker Image for Backend') {
+            steps {
+
+                sh "docker build -t nimishgsk/backend:latest ."
+
+            }
+        }
+
+        stage('Stage 5: Build Docker Image for Frontend') {
+            steps {
+                dir('frontend') {
+                    sh "docker build -t nimishgsk/frontend:latest ."
+                }
+            }
+        }
+
+
+
+
+        stage('Stage 6: Push Docker Image to DockerHub - Backend') {
+            steps {
+                sh 'echo $DOCKERHUB_CRED_PSW | docker login -u $DOCKERHUB_CRED_USR --password-stdin'
+                sh "docker push nimishgsk/backend:latest"
+            }
+        }
+
+
+
+        stage('Stage 7: Push Docker Image to DockerHub - Frontend') {
+            steps {
+                sh 'echo $DOCKERHUB_CRED_PSW | docker login -u $DOCKERHUB_CRED_USR --password-stdin'
+                sh "docker push nimishgsk/frontend:latest"
+            }
+        }
+
+        stage('Stage 8: Deploy to Kubernetes') {
+            steps {
+                // Clone the GitHub repository containing the k8s directory
+                git branch: 'main',
+                    url: 'https://github.com/nimishgsk17/SPE_DevOps.git'
+
+                // Use kubeconfig credentials to authenticate with Kubernetes
+                withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG_PATH')]) {
+                    sh '''
+                        export KUBECONFIG=$KUBECONFIG_PATH
+                        kubectl apply -f k8s/
+                    '''
+                }
+            }
+        }
+
+
+
+        // stage('Stage 9: Copy Logs to Home Directory') {
+        //     steps {
+        //         script {
+        //             def containerId = sh(script: "docker ps -q --filter ancestor=nimishgsk/backend:latest", returnStdout: true).trim()
+        //             if (containerId) {
+        //                 sh "docker cp ${containerId}:application_devops.log ~/dummy/application_devops.log"
+        //             } else {
+        //                 echo "Backend container is not running"
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Stage 9: Clean Docker Images') {
+            steps {
+                sh "docker container prune -f"
+                sh "docker image prune -a -f"
+            }
+        }
+
+        // stage('Step 10: Ansible Deployment') {
+        //     steps {
+        //         script {
+        //             // // Clone the repository from GitHub
+        //             // git url: 'https://github.com/GouthamUR/SPE_Backend', branch: 'main'
+
+        //             // Ensure Ansible deployment folder exists
+        //             def ansibleFolder = '/home/nimishgsk/Prog/SPE/Backend/Deployment'
+
+        //             // Run the Ansible playbook
+        //             ansiblePlaybook(
+        //                 becomeUser: null,
+        //                 colorized: true,
+        //                 credentialsId: 'localhost',
+        //                 disableHostKeyChecking: true,
+        //                 installation: 'Ansible',
+        //                 inventory: "${ansibleFolder}/inventory",
+        //                 playbook: "${ansibleFolder}/deploy.yml",
+        //                 sudoUser: null
+        //             )
+        //         }
+        //     }
+        // }
+
+
+    }
+}
