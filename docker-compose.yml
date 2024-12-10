@@ -3,46 +3,48 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: /home/nimishgsk/Prog/SPE/Frontend
-      dockerfile: Dockerfile
+      context: /home/gouthamur/IdeaProjects/SPE_Final
+      dockerfile: Dockerfile  # Use this if your Dockerfile is named "Dockerfile"
     ports:
       - "3000:3000"
     depends_on:
       - backend
-    environment:
-      - REACT_APP_BACKEND_URL=http://backend:8081
     networks:
       - app-network
 
   backend:
     build:
-      context: /home/nimishgsk/Prog/SPE/Backend
-      dockerfile: Dockerfile
+      context: /home/gouthamur/IdeaProjects/FS/src/main/java/org/example/fullstack-frontend
+      dockerfile: Dockerfile  # Use this if your Dockerfile is named "Dockerfile"
     ports:
       - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3307/mydb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
     depends_on:
       - mysql
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/fullstack
-      - SPRING_DATASOURCE_USERNAME=CEO
-      - SPRING_DATASOURCE_PASSWORD=CEO_Str0ng@2024!
     networks:
       - app-network
-
 
   mysql:
     image: mysql:8.0
-    container_name: mysql-db
-    ports:
-      - "3307:3306"
+    container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: Tom&Jerry@1
-      MYSQL_DATABASE: fullstack
-      MYSQL_USER: CEO
-      MYSQL_PASSWORD: CEO_Str0ng@2024!
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3307:3307"
     networks:
       - app-network
+    volumes:
+      - mysql-data:/var/lib/mysql
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mysql-data:
